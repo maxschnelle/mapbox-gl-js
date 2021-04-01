@@ -31,8 +31,8 @@ var GUIParams = function() {
     this.enableTerrain = true;
     this.terrainExaggeration = 1.5;
     this.style = 'satellite-streets-v11';
-    this.fogRangeStart = 1000;
-    this.fogRangeEnd = 10000;
+    this.fogRangeStart = 1.5;
+    this.fogRangeEnd = 2.0;
     this.fogOpacity = 1.0;
     this.fogColor = [255, 255, 255];
     this.fogSkyBlend = 0.1;
@@ -103,14 +103,14 @@ window.onload = function() {
         });
     });
 
-    var fogRangeStart = fog.add(guiParams, 'fogRangeStart', 0.0, 15000.0);
+    var fogRangeStart = fog.add(guiParams, 'fogRangeStart', 0.0, 15.0);
     fogRangeStart.onFinishChange((value) => {
         map.setFog({
             "range": [value, guiParams.fogRangeEnd],
         });
     });
 
-    var fogRangeEnd = fog.add(guiParams, 'fogRangeEnd', 0.0, 15000.0);
+    var fogRangeEnd = fog.add(guiParams, 'fogRangeEnd', 0.0, 15.0);
     fogRangeEnd.onFinishChange((value) => {
         map.setFog({
             "range": [guiParams.fogRangeStart, value],

@@ -833,6 +833,7 @@ class Painter {
             uniforms['u_fog_color'] = [fogColor.r, fogColor.g, fogColor.b];
             uniforms['u_haze_color_linear'] = [hazeColor.r, hazeColor.g, hazeColor.b].map(c => 1.5 * Math.pow(c, 2.2));
             uniforms['u_haziness'] = fog.properties.get('haziness');
+            uniforms['u_fog_exponent'] = 1.0 + 1.0 / Math.max(0.05, 1.0 - fog.properties.get('haziness'));
             uniforms['u_fog_opacity'] = fog.properties.get('opacity') * fog.getFogPitchFactor(this.transform.pitch);
             uniforms['u_fog_sky_blend'] = fog.properties.get('sky-blend');
             uniforms['u_fog_temporal_offset'] = temporalOffset;

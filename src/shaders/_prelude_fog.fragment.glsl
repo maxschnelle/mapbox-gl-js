@@ -4,6 +4,7 @@ uniform vec2 u_fog_range;
 uniform vec3 u_fog_color;
 uniform vec3 u_haze_color_linear;
 uniform float u_fog_opacity;
+uniform float u_fog_exponent;
 uniform float u_fog_sky_blend;
 uniform float u_fog_temporal_offset;
 uniform float u_haziness;
@@ -71,7 +72,7 @@ vec3 fog_apply_sky_gradient(vec3 camera_ray, vec3 sky_color) {
 vec3 fog_apply(vec3 color, vec3 pos) {
     float haze_opac = fog_opacity(pos);
     // When haze is present, raise the fog to a power to decrease it
-    float fog_opac = pow(haze_opac, 1.0 + 1.0 / max(0.05, 1.0 - u_haziness));
+    float fog_opac = pow(haze_opac, u_fog_exponent);
     vec3 haze = u_haziness * haze_opac * u_haze_color_linear;
 
     // When there's any haze, we prefer the tone map, but when haze goes away,

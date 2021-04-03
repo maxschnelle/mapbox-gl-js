@@ -18,6 +18,8 @@ import Color from '../style-spec/util/color.js';
 type Props = {|
     "range": DataConstantProperty<[number, number]>,
     "color": DataConstantProperty<Color>,
+    "haze-color": DataConstantProperty<Color>,
+    "haziness": DataConstantProperty<number>,
     "opacity": DataConstantProperty<number>,
     "sky-blend": DataConstantProperty<number>,
 |};
@@ -25,6 +27,8 @@ type Props = {|
 const properties: Properties<Props> = new Properties({
     "range": new DataConstantProperty(styleSpec.fog.range),
     "color": new DataConstantProperty(styleSpec.fog.color),
+    "haze-color": new DataConstantProperty(styleSpec.fog["haze-color"]),
+    "haziness": new DataConstantProperty(styleSpec.fog["haziness"]),
     "opacity": new DataConstantProperty(styleSpec.fog.opacity),
     "sky-blend": new DataConstantProperty(styleSpec.fog["sky-blend"]),
 });

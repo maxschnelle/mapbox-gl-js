@@ -825,11 +825,14 @@ class Painter {
         if (fog) {
             const temporalOffset = (this.frameCounter / 1000.0) % 1;
             const fogColor = fog.properties.get('color');
+            const hazeColor = fog.properties.get('haze-color');
             const uniforms = {};
 
             uniforms['u_cam_matrix'] = tileID ? this.transform.calculateCameraMatrix(tileID) : this.identityMat;
             uniforms['u_fog_range'] = fog.properties.get('range');
             uniforms['u_fog_color'] = [fogColor.r, fogColor.g, fogColor.b];
+            uniforms['u_haze_color'] = [hazeColor.r, hazeColor.g, hazeColor.b];
+            uniforms['u_haziness'] = fog.properties.get('haziness');
             uniforms['u_fog_opacity'] = fog.properties.get('opacity') * fog.getFogPitchFactor(this.transform.pitch);
             uniforms['u_fog_sky_blend'] = fog.properties.get('sky-blend');
             uniforms['u_fog_temporal_offset'] = temporalOffset;

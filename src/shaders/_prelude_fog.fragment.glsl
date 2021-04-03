@@ -2,9 +2,11 @@
 
 uniform vec2 u_fog_range;
 uniform vec3 u_fog_color;
+uniform vec3 u_haze_color;
 uniform float u_fog_opacity;
 uniform float u_fog_sky_blend;
 uniform float u_fog_temporal_offset;
+uniform float u_haziness;
 
 // Assumes z up and camera_dir *normalized* (to avoid computing its length multiple
 // times for different functions).
@@ -41,17 +43,44 @@ float fog_opacity(vec3 pos) {
     return falloff * u_fog_opacity;
 }
 
+vec3 linear_to_srgb(vec3 color) {
+    return pow(color, vec3(1.0 / 2.2));
+}
+
+vec3 srgb_to_linear(vec3 color) {
+    return pow(color, vec3(2.2));
+}
+
 // Assumes z up
 vec3 fog_apply_sky_gradient(vec3 camera_ray, vec3 sky_color) {
     return mix(sky_color, u_fog_color, fog_sky_blending(normalize(camera_ray)));
 }
 
+// A tone map is a smooth min between x and 1.0
+vec3 tonemap (vec3 color) {
+    // Exponential smooth min
+    const float k = 8.0;
+    return -log2(exp2(-k * color) + exp2(-k)) * (1.0 / k);
+
+    // Cubic smooth min (works well)
+    //const float k = 0.8;
+    //vec3 h = max(k - abs(color - 1.0), vec3(0)) / k;
+    //return max(vec3(0), min(color, vec3(1)) - h * h * h * k * (1.0 / 6.0));
+}
+
 vec3 fog_apply(vec3 color, vec3 pos) {
-    // We mix in sRGB color space. sRGB roughly corrects for perceived brightness
-    // so that dark fog and light fog obscure similarly for otherwise identical
-    // parameters. If we blend in linear RGB, then the parameters to control dark
-    // and light fog are fundamentally different.
-    return mix(color, u_fog_color, fog_opacity(pos));
+    float haze_opac = fog_opacity(pos);
+
+    // When haze is present, raise the fog to a power to decrease it
+    float fog_opac = pow(haze_opac, 1.0 / max(0.05, 1.0 - u_haziness));
+    vec3 haze = 1.5 * u_haziness * haze_opac * srgb_to_linear(u_haze_color);
+
+    vec3 col = srgb_to_linear(color);
+    // When there's any haze, we prefer the tone map, but when haze goes away,
+    // we transition to simply the original color
+    col = mix(col, tonemap(col + haze), sqrt(haze_opac));
+
+    return mix(linear_to_srgb(col), u_fog_color, fog_opac);
 }
 
 // Un-premultiply the alpha, then blend fog, then re-premultiply alpha. For

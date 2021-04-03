@@ -72,7 +72,7 @@ vec3 fog_apply(vec3 color, vec3 pos) {
     float haze_opac = fog_opacity(pos);
     // When haze is present, raise the fog to a power to decrease it
     float fog_opac = pow(haze_opac, 1.0 + 1.0 / max(0.05, 1.0 - u_haziness));
-    vec3 haze = 1.5 * u_haziness * haze_opac * u_haze_color_linear;
+    vec3 haze = u_haziness * haze_opac * u_haze_color_linear;
 
     // When there's any haze, we prefer the tone map, but when haze goes away,
     // we transition to simply the original color

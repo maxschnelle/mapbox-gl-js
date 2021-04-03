@@ -831,7 +831,7 @@ class Painter {
             uniforms['u_cam_matrix'] = tileID ? this.transform.calculateCameraMatrix(tileID) : this.identityMat;
             uniforms['u_fog_range'] = fog.properties.get('range');
             uniforms['u_fog_color'] = [fogColor.r, fogColor.g, fogColor.b];
-            uniforms['u_haze_color_linear'] = [hazeColor.r, hazeColor.g, hazeColor.b].map(c => Math.pow(c, 2.2));
+            uniforms['u_haze_color_linear'] = [hazeColor.r, hazeColor.g, hazeColor.b].map(c => 1.5 * Math.pow(c, 2.2));
             uniforms['u_haziness'] = fog.properties.get('haziness');
             uniforms['u_fog_opacity'] = fog.properties.get('opacity') * fog.getFogPitchFactor(this.transform.pitch);
             uniforms['u_fog_sky_blend'] = fog.properties.get('sky-blend');
